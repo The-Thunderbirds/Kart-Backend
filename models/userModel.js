@@ -14,13 +14,18 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please Enter Your Email"],
         unique: true,
     },
+    mobile_number:{
+        type: String,
+        required: [true, "Please Enter Your Mobile Number"],
+        minLength: [10, "Mobile Number should have 10 digits"],
+    },
     gender: {
         type: String,
         required: [true, "Please Enter Gender"]
     },
     password: {
         type: String,
-        required: [true, "Please Enter Your Password"],
+        // required: [true, "Please Enter Your Password"],
         minLength: [8, "Password should have atleast 8 chars"],
         select: false,
     },
@@ -31,6 +36,12 @@ const userSchema = new mongoose.Schema({
         url: {
             type: String,
         }
+    },
+    public_key_hash:{
+        type: String
+    },
+    private_key: {
+        type: String,
     },
     role: {
         type: String,
