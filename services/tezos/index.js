@@ -18,7 +18,7 @@ const add_joining_bonus_admin = async (pkh) => {
     return {"hash":op.hash};
 }
 
-const mint = async (mint_params, contract_address) => {
+const mint = async (mint_params, contract_address, private_key) => {
     
     params = [];
     mint_params.forEach((p) => {
@@ -39,15 +39,78 @@ const mint = async (mint_params, contract_address) => {
         });
     })
 
-    const Tezos = await getTezosAccount(ADMIN_WALLET_PRIVATE_KEY);
+    const Tezos = await getTezosAccount(private_key);
     const contract = await Tezos.contract.at(contract_address);
     const op = await contract.methods.mint(params).send();
     // await op.confirmation(OP_CONFIRMATIONS);
     return {"hash":op.hash};
 };
 
+const init_replace_item = async (tokenId, oldItemId, newItemId, mintkart_address, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.init_replace_item(mintkart_address, newItemId, oldItemId, tokenId).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+};
+
+const init_burn = async (tokenId, mintkart_address, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.init_burn(mintkart_address, tokenId).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+};
+
+const add_seller = async (seller, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.add_seller(seller).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+};
+
+const remove_seller = async (seller, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.remove_seller(seller).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+};
+
+const add_customer_service = async (customer_service, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.add_customer_service(customer_service).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+};
+
+const remove_customer_service = async (customer_service, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.remove_customer_service(customer_service).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+};
+
+const buy = async (itemId, buyer, contract_address, private_key) => {
+    const Tezos = await getTezosAccount(private_key);
+    const contract = await Tezos.contract.at(contract_address);
+    const op = await contract.methods.buy(buyer, itemId).send();
+    // await op.confirmation(OP_CONFIRMATIONS);
+    return {"hash":op.hash};
+}
+
 module.exports = {
     add_joining_bonus,
     add_joining_bonus_admin,
-    mint
+    mint,
+    init_replace_item,
+    init_burn,
+    add_seller,
+    remove_seller,
+    add_customer_service,
+    remove_customer_service,
+    buy
 }

@@ -10,6 +10,12 @@ const { createAccount } =require('../services/tezos/wallet.js');
 const { encode, decode } = require('../utils/math');
 const { ADMIN_WALLET_PRIVATE_KEY, FA2_CONTRACT_ADDRESS, MINTKART_CONTRACT_ADDRESS } = require('../constants.js');
 const { add_joining_bonus, mint } = require('../services/tezos/index');
+const { init_replace_item, 
+    init_burn, 
+    add_seller,
+    remove_seller,
+    add_customer_service,
+    remove_customer_service, buy } = require('../services/tezos/index');
 
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
