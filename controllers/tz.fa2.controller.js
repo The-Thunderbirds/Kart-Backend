@@ -3,22 +3,22 @@ const { mint, init_replace_item, init_burn, add_seller, remove_seller, add_custo
 const { ADMIN_WALLET_PRIVATE_KEY, FA2_CONTRACT_ADDRESS, MINTKART_CONTRACT_ADDRESS } = require('../constants.js');
 
 exports._mint = asyncErrorHandler(async (req, res, next) => {
-    private_key = '';
-    const op = await mint([
+    private_key = '';// seller-private-key after decoding
+    params = [
         {
-            tokenId: 1,
+            tokenId: 1,// NFTid
             metadata: {
-                "name" : "Item Name 1",
-                "symbol" : "MINTKART",
-                "decimals" : "0",
-                "artifactUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",
-                "displayUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",
-                "thumbnailUri" : "ipfs://QmXJSgZeKS9aZrHkp81hRtZpWWGCkkBma9d6eeUPfJsLEV",
-                "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"
+                "name" : "Item Name 1",// fetch from backend
+                "symbol" : "MINTKART",// leave
+                "decimals" : "0",// leave
+                "artifactUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",// picture
+                "displayUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",// picture
+                "thumbnailUri" : "ipfs://QmXJSgZeKS9aZrHkp81hRtZpWWGCkkBma9d6eeUPfJsLEV",// picture
+                "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"// leave
             },
-            itemId: "item-id-1",
-            warranty: 5,
-            mintkart_address: MINTKART_CONTRACT_ADDRESS
+            itemId: "item-id-1",// fetch
+            warranty: 5,// fetch
+            mintkart_address: MINTKART_CONTRACT_ADDRESS// leave
         },
         {
             tokenId: 2,
@@ -35,7 +35,9 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
             warranty: 10,
             mintkart_address: MINTKART_CONTRACT_ADDRESS
         }
-    ], FA2_CONTRACT_ADDRESS, private_key);
+    ];
+    
+    const op = await mint(params, FA2_CONTRACT_ADDRESS, private_key);
 
     console.log(op);
 });
@@ -56,7 +58,7 @@ exports._init_burn = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports._add_seller = asyncErrorHandler(async (req, res, next) => {
-    seller = 'tz1TpvrMd352n7LZgb3TAd1kE4XZvTLS5EvR';
+    seller = 'tz1TpvrMd352n7LZgb3TAd1kE4XZvTLS5EvR';// public-key-hash
     const op = await add_seller(seller, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
 });
@@ -68,7 +70,7 @@ exports._remove_seller = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports._add_customer_service = asyncErrorHandler(async (req, res, next) => {
-    customer_service = 'tz1iCSMCuUWiEFjSzDLWvK9hMht9zzCw7kXb';
+    customer_service = 'tz1iCSMCuUWiEFjSzDLWvK9hMht9zzCw7kXb';// public-key-hash
     const op = await add_customer_service(customer_service, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
 });
