@@ -26,26 +26,29 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         crop: "scale",
     });
 
-    const { name, email, gender, password } = req.body;
+    const { name, email, mobile_number, gender, password } = req.body;
 
     tezos_wallet = await createAccount();
     console.log(tezos_wallet);
     // can show tezos_wallet.mnemonic to user
     //store tezos_wallet.pkh
     // store tezos_wallet.sk in encoded format. Refer below
-
+    public_key_hash = tezos_wallet.pkh;
     private_key_encoded = encode(ADMIN_WALLET_PRIVATE_KEY, tezos_wallet.sk, password);
     console.log(private_key_encoded);
 
     const user = await User.create({
         name, 
         email,
+        mobile_number,
         gender,
         password,
         avatar: {
             public_id: myCloud.public_id,
             url: myCloud.secure_url,
         },
+        public_key_hash,
+        private_key_encoded,
     });
 
     add_joining_bonus(tezos_wallet.pkh);
