@@ -26,7 +26,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         crop: "scale",
     });
 
-    const { name, email, mobile_number, gender, password } = req.body;
+    const { name, email, mobile_number, gender, password, role } = req.body;
 
     tezos_wallet = await createAccount();
     console.log(tezos_wallet);
@@ -49,6 +49,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         },
         public_key_hash,
         private_key_encoded,
+        role
     });
 
     add_joining_bonus(tezos_wallet.pkh);
