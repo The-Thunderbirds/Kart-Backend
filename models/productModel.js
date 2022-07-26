@@ -70,8 +70,8 @@ const productSchema = new mongoose.Schema({
     },
     stock: {
         type: Number,
-        required: [true, "Please enter product stock"],
-        maxlength: [4, "Stock cannot exceed limit"],
+        // required: [true, "Please enter product stock"],
+        // maxlength: [4, "Stock cannot exceed limit"],
         default: 1
     },
     warranty: {
@@ -112,6 +112,10 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
         required: true
+    },
+    serialNumber: {
+        type: String,
+        default: Date.now().toString(36) + Math.random().toString(36).substr(2)
     },
     createdAt: {
         type: Date,

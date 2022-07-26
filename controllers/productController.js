@@ -55,7 +55,20 @@ exports.getProductDetails = asyncErrorHandler(async (req, res, next) => {
         product,
     });
 });
+// Get Product Details
+exports.getProductDetailsFromSerialNo = asyncErrorHandler(async (req, res, next) => {
 
+    const product = await Product.find({serialNumber: req.params.id});
+
+    if (!product) {
+        return next(new ErrorHandler("Product Not Found", 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        product,
+    });
+});
 // Get All Products ---ADMIN
 exports.getAdminProducts = asyncErrorHandler(async (req, res, next) => {
     const products = await Product.find();
