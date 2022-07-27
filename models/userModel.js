@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
     },
     private_key: {
         type: String,
+        maxlength: 500
     },
     role: {
         type: String,

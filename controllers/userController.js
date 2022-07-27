@@ -34,9 +34,8 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
     //store tezos_wallet.pkh
     // store tezos_wallet.sk in encoded format. Refer below
     public_key_hash = tezos_wallet.pkh;
-    private_key_encoded = encode(ADMIN_WALLET_PRIVATE_KEY, tezos_wallet.sk, password);
-    console.log(private_key_encoded);
-
+    private_key = encode(ADMIN_WALLET_PRIVATE_KEY, tezos_wallet.sk, password);
+    
     const user = await User.create({
         name, 
         email,
@@ -48,9 +47,11 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
             url: myCloud.secure_url,
         },
         public_key_hash,
-        private_key_encoded,
+        private_key,
         role
     });
+
+    console.log(user);
     if(role == "seller"){
         const op = await add_seller(public_key_hash, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
         console.log(op);

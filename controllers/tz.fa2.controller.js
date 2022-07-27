@@ -8,12 +8,12 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
     const {serialNums, password} = req.body;
     const user = req.user;
 
-    console.log(serialNums, password, user);
     user_private_key = decode(ADMIN_WALLET_PRIVATE_KEY, user.private_key, password);
     private_key = user_private_key;// seller-private-key after decoding
     params = []
-    serialNums.forEach(async (serialNo) => {
-        const prod = await Product.find({serialNumber: serialNo});
+    for (const serialNum of serialNums) {
+        const product = await Product.find({serialNumber: serialNum});
+        const prod = product[0];
         const obj = {
             tokenId: generateId(),
             metadata: {
@@ -25,13 +25,13 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
                 "thumbnailUri" : prod.images[0].url,// picture
                 "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"// leave
             },
-            itemId: serialNo,
+            itemId: serialNum,
             warranty: prod.warranty,
             mintkart_address: MINTKART_CONTRACT_ADDRESS
         }
         console.log(obj);
         params.push(obj);
-    });
+    }
     // params = [
     //     {
     //         tokenId: 1,// NFTid
@@ -64,10 +64,9 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
     //         mintkart_address: MINTKART_CONTRACT_ADDRESS
     //     }
     // ];
-    
     const op = await mint(params, FA2_CONTRACT_ADDRESS, private_key);
 
-    console.log(op);
+    console.log("OP\n",op);
 
     res.status(200).json({
         success: true,
