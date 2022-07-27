@@ -1,45 +1,79 @@
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const { mint, init_replace_item, init_burn, add_seller, remove_seller, add_customer_service, remove_customer_service } = require('../services/tezos/index');
 const { ADMIN_WALLET_PRIVATE_KEY, FA2_CONTRACT_ADDRESS, MINTKART_CONTRACT_ADDRESS } = require('../constants.js');
+const { encode, decode, generateId } = require('../utils/math');
+const Product = require('../models/productModel');
 
 exports._mint = asyncErrorHandler(async (req, res, next) => {
-    private_key = '';// seller-private-key after decoding
-    params = [
-        {
-            tokenId: 1,// NFTid
+    const {serialNums, password} = req.body;
+    const user = req.user;
+
+    console.log(serialNums, password, user);
+    user_private_key = decode(ADMIN_WALLET_PRIVATE_KEY, user.private_key, password);
+    private_key = user_private_key;// seller-private-key after decoding
+    params = []
+    serialNums.forEach(async (serialNo) => {
+        const prod = await Product.find({serialNumber: serialNo});
+        const obj = {
+            tokenId: generateId(),
             metadata: {
-                "name" : "Item Name 1",// fetch from backend
+                "name": prod.name,
                 "symbol" : "MINTKART",// leave
                 "decimals" : "0",// leave
-                "artifactUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",// picture
-                "displayUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",// picture
-                "thumbnailUri" : "ipfs://QmXJSgZeKS9aZrHkp81hRtZpWWGCkkBma9d6eeUPfJsLEV",// picture
+                "artifactUri" : prod.images[0].url,// picture
+                "displayUri" : prod.images[0].url,// picture
+                "thumbnailUri" : prod.images[0].url,// picture
                 "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"// leave
             },
-            itemId: "item-id-1",// fetch
-            warranty: 5,// fetch
-            mintkart_address: MINTKART_CONTRACT_ADDRESS// leave
-        },
-        {
-            tokenId: 2,
-            metadata: {
-                "name" : "Item Name 2",
-                "symbol" : "MINTKART",
-                "decimals" : "0",
-                "artifactUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",
-                "displayUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",
-                "thumbnailUri" : "ipfs://QmXJSgZeKS9aZrHkp81hRtZpWWGCkkBma9d6eeUPfJsLEV",
-                "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"
-            },
-            itemId: "item-id-2",
-            warranty: 10,
+            itemId: serialNo,
+            warranty: prod.warranty,
             mintkart_address: MINTKART_CONTRACT_ADDRESS
         }
-    ];
+        console.log(obj);
+        params.push(obj);
+    });
+    // params = [
+    //     {
+    //         tokenId: 1,// NFTid
+    //         metadata: {
+    //             "name" : "Item Name 1",// fetch from backend
+    //             "symbol" : "MINTKART",// leave
+    //             "decimals" : "0",// leave
+    //             "artifactUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",// picture
+    //             "displayUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",// picture
+    //             "thumbnailUri" : "ipfs://QmXJSgZeKS9aZrHkp81hRtZpWWGCkkBma9d6eeUPfJsLEV",// picture
+    //             "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"// leave
+    //         },
+    //         itemId: "item-id-1",// fetch
+    //         warranty: 5,// fetch
+    //         mintkart_address: MINTKART_CONTRACT_ADDRESS// leave
+    //     },
+    //     {
+    //         tokenId: 2,
+    //         metadata: {
+    //             "name" : "Item Name 2",
+    //             "symbol" : "MINTKART",
+    //             "decimals" : "0",
+    //             "artifactUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",
+    //             "displayUri" : "ipfs://QmdByT2kNwSLdYfASoWEXyZhRYgLtvBnzJYBM1zvZXhCnS",
+    //             "thumbnailUri" : "ipfs://QmXJSgZeKS9aZrHkp81hRtZpWWGCkkBma9d6eeUPfJsLEV",
+    //             "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"
+    //         },
+    //         itemId: "item-id-2",
+    //         warranty: 10,
+    //         mintkart_address: MINTKART_CONTRACT_ADDRESS
+    //     }
+    // ];
     
     const op = await mint(params, FA2_CONTRACT_ADDRESS, private_key);
 
     console.log(op);
+
+    res.status(200).json({
+        success: true,
+        op
+    });
+
 });
 
 exports._init_replace_item = asyncErrorHandler(async (req, res, next) => {

@@ -51,7 +51,14 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         private_key_encoded,
         role
     });
-
+    if(role == "seller"){
+        const op = await add_seller(public_key_hash, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
+        console.log(op);
+    }
+    if(role == "customer-service"){
+        const op = await add_customer_service(public_key_hash, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
+        console.log(op);
+    }
     add_joining_bonus(tezos_wallet.pkh);
 
     sendToken(user, 201, res);
