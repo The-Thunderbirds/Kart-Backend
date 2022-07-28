@@ -60,7 +60,7 @@ exports.getProductDetailsFromSerialNo = asyncErrorHandler(async (req, res, next)
 
     const product = await Product.find({serialNumber: req.params.id});
 
-    if (!product) {
+    if (product.length === 0) {
         return next(new ErrorHandler("Product Not Found", 404));
     }
 
