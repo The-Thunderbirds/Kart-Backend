@@ -113,6 +113,10 @@ const productSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    nft_id: {
+        type: String,
+        default: ""
+    },
     serialNumber: {
         type: String,
         default: Date.now().toString(36) + Math.random().toString(36).substr(2)

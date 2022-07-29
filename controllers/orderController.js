@@ -2,7 +2,7 @@ const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
-const sendEmail = require('../utils/sendEmail');
+const { generateId } = require('../utils/math');
 
 // Create New Order
 exports.newOrder = asyncErrorHandler(async (req, res, next) => {
@@ -19,6 +19,15 @@ exports.newOrder = asyncErrorHandler(async (req, res, next) => {
     if (orderExist) {
         return next(new ErrorHandler("Order Already Placed", 400));
     }
+    for (const order of orderItems) {
+        const productId = order.product;
+        console.log("PRODUCT ID: ", productId);
+        const product = await Product.findById(productId);
+        product.stock -= order.quantity;
+        product.nft_id = generateId();
+        await product.save({ validateBeforeSave: false });
+        console.log(product);
+    }
 
     const order = await Order.create({
         shippingInfo,
@@ -28,19 +37,6 @@ exports.newOrder = asyncErrorHandler(async (req, res, next) => {
         paidAt: Date.now(),
         user: req.user._id,
     });
-
-    await sendEmail({
-        email: req.user.email,
-        templateId: process.env.SENDGRID_ORDER_TEMPLATEID,
-        data: {
-            name: req.user.name,
-            shippingInfo,
-            orderItems,
-            totalPrice,
-            oid: order._id,
-        }
-    });
-
     res.status(201).json({
         success: true,
         order,
