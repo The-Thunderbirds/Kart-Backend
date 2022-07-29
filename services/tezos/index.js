@@ -7,7 +7,7 @@ const { SHOW_ERROR, getTezosAccount } = require("./helper");
 const add_joining_bonus = async (pkh) => {
     const Tezos = await getTezosAccount(ADMIN_WALLET_PRIVATE_KEY);
 
-    const op = await Tezos.contract.transfer({to: pkh, amount: 0.1});
+    const op = await Tezos.contract.transfer({to: pkh, amount: 5});
     return {"hash":op.hash};
 }
 
