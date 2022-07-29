@@ -4,6 +4,8 @@ const { ADMIN_WALLET_PRIVATE_KEY, FA2_CONTRACT_ADDRESS, MINTKART_CONTRACT_ADDRES
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
+const ErrorHandler = require('../utils/errorHandler');
+
 
 exports._buy = asyncErrorHandler(async (req, res, next) => {
     console.log(req.body);
@@ -22,19 +24,33 @@ exports._buy = asyncErrorHandler(async (req, res, next) => {
 exports.fetchWarrantyDetails = asyncErrorHandler(async (req, res, next) => {
     const {serialNum, user_email} = req.body;
 
-    const product = await Product.find({serialNumber: serialNum});
-    if (product.length === 0) {
+    const products = await Product.find({serialNumber: serialNum});
+    if (products.length === 0) {
         return next(new ErrorHandler("Product Not Found", 404));
     }
-    const user = await User.find({email:user_email});
-    if (user.length === 0) {
+    const product = products[0];
+    const users = await User.find({email:user_email});
+    if (users.length === 0) {
         return next(new ErrorHandler("User Not Found", 404));
     }
-    const order = await Order.find({user: user._id});
-    if(order.length === 0) {
+    const user = users[0];
+    const orders = await Order.find({user: user._id});
+    if(orders.length === 0) {
+        return next(new ErrorHandler("No orders found", 404));
+    }
+    
+    let flag = false;
+    let order = {};
+    for(const curr_order of orders){
+        if(curr_order.orderItems[0].product.toString() === product._id.toString() ){
+            flag = true;
+            order = curr_order;
+            break;
+        }
+    }
+    if(!flag){
         return next(new ErrorHandler("Order Not Found", 404));
     }
-
     res.status(200).json({
         success: true,
         order,
