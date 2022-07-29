@@ -16,6 +16,7 @@ const { init_replace_item,
     remove_seller,
     add_customer_service,
     remove_customer_service, buy } = require('../services/tezos/index');
+const { send } = require('process');
 
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
@@ -30,9 +31,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
 
     tezos_wallet = await createAccount();
     console.log(tezos_wallet);
-    // can show tezos_wallet.mnemonic to user
-    //store tezos_wallet.pkh
-    // store tezos_wallet.sk in encoded format. Refer below
+    
     public_key_hash = tezos_wallet.pkh;
     private_key = encode(ADMIN_WALLET_PRIVATE_KEY, tezos_wallet.sk, password);
     
@@ -60,9 +59,16 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         const op = await add_customer_service(public_key_hash, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
         console.log(op);
     }
-    add_joining_bonus(tezos_wallet.pkh);
-
+    
     sendToken(user, 201, res);
+});
+
+exports.add_joining_bonus = asyncErrorHandler(async (req, res, next) => {
+    await add_joining_bonus(req.user.public_key_hash);
+    res.status(200).json({
+        success: true,
+        message: "Request Sent",
+    });
 });
 
 // Login User
