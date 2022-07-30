@@ -12,21 +12,24 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
     private_key = user_private_key;// seller-private-key after decoding
     params = []
     for (const serialNum of serialNums) {
-        const product = await Product.find({serialNumber: serialNum});
-        const prod = product[0];
+        const products = await Product.find({serialNumber: serialNum});
+
+        const product = products[0];
+        product.nft_id = generateId();
+        await product.save({ validateBeforeSave: false });
         const obj = {
-            tokenId: generateId(),
+            tokenId: product.nft_id,
             metadata: {
-                "name": prod.name,
+                "name": product.name,
                 "symbol" : "MINTKART",// leave
                 "decimals" : "0",// leave
-                "artifactUri" : prod.images[0].url,// picture
-                "displayUri" : prod.images[0].url,// picture
-                "thumbnailUri" : prod.images[0].url,// picture
+                "artifactUri" : product.images[0].url,// picture
+                "displayUri" : product.images[0].url,// picture
+                "thumbnailUri" : product.images[0].url,// picture
                 "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"// leave
             },
             itemId: serialNum,
-            warranty: prod.warranty,
+            warranty: product.warranty,
             mintkart_address: MINTKART_CONTRACT_ADDRESS
         }
         console.log(obj);

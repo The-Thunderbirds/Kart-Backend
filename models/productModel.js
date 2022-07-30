@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -119,7 +120,7 @@ const productSchema = new mongoose.Schema({
     },
     serialNumber: {
         type: String,
-        default: Date.now().toString(36) + Math.random().toString(36).substr(2)
+        default: "sno-" + uuidv4()
     },
     createdAt: {
         type: Date,

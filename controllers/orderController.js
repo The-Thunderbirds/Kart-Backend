@@ -24,7 +24,6 @@ exports.newOrder = asyncErrorHandler(async (req, res, next) => {
         console.log("PRODUCT ID: ", productId);
         const product = await Product.findById(productId);
         product.stock -= order.quantity;
-        product.nft_id = generateId();
         await product.save({ validateBeforeSave: false });
         console.log(product);
     }
