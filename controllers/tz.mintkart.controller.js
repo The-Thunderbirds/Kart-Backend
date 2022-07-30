@@ -5,7 +5,8 @@ const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
 const ErrorHandler = require('../utils/errorHandler');
-
+const {sendSms, buildMessage} = require('../services/twilio/twilio');
+const { getNodeExplorer } = require('../services/tezos/helper');
 
 exports._buy = asyncErrorHandler(async (req, res, next) => {
     console.log(req.body);
@@ -15,6 +16,9 @@ exports._buy = asyncErrorHandler(async (req, res, next) => {
     console.log(itemId,buyer);
     const op = await buy(itemId, buyer, MINTKART_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
+    const products = await Product.find({serialNumber: serialNum});
+    const product = products[0];
+    await sendSms('+917207895340', buildMessage(itemId, product.nft_id, getNodeExplorer(op['hash'])));
     res.status(200).json({
         success: true,
         op,
