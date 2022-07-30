@@ -120,7 +120,7 @@ const productSchema = new mongoose.Schema({
     },
     serialNumber: {
         type: String,
-        default: "sno-" + uuidv4()
+        default: ""
     },
     createdAt: {
         type: Date,

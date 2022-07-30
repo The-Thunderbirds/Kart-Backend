@@ -79,12 +79,27 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports._init_replace_item = asyncErrorHandler(async (req, res, next) => {
-    tokenId = 1;
-    oldItemId = 'item-id-1';
-    newItemId = 'item-id-1-new';
-    private_key = '';
+    const {serialNum, user_email} = req.body;
+    const products = await Product.find({serialNumber: serialNum});
+    if (products.length === 0) {
+        return next(new ErrorHandler("Product Not Found", 404));
+    }
+    const product = products[0];
+    const users = await User.find({email:user_email});
+    if (users.length === 0) {
+        return next(new ErrorHandler("User Not Found", 404));
+    }
+    const user = users[0];
+    tokenId = product.nft_id;
+    oldItemId = serialNum;
+    newItemId = "sno-" + uuidv4();
+    private_key = user.private_key;
     const op = await init_replace_item(tokenId, oldItemId, newItemId, MINTKART_CONTRACT_ADDRESS, FA2_CONTRACT_ADDRESS, private_key);
     console.log(op);
+    res.status(200).json({
+        success: true,
+        op
+    });
 });
 
 exports._init_burn = asyncErrorHandler(async (req, res, next) => {
