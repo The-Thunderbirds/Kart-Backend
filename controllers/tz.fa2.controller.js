@@ -30,9 +30,10 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
                 "metadata" : "ipfs://QmYP9i9axHywpMEaAcCopZz3DvAXvR7Bg7srNvrRbNUBTh"// leave
             },
             itemId: serialNum,
-            warranty: product.warranty,
+            warranty: product.warranty * 365 * 24 * 3600,
             mintkart_address: MINTKART_CONTRACT_ADDRESS
         }
+        // ooUGExWB46disNo7TrMMe4hRkmq2ksNqJYd2NwvMfpENnSFxhxu
         console.log(obj);
         params.push(obj);
     }
