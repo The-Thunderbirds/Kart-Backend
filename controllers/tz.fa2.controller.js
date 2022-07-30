@@ -4,6 +4,7 @@ const { ADMIN_WALLET_PRIVATE_KEY, FA2_CONTRACT_ADDRESS, MINTKART_CONTRACT_ADDRES
 const { encode, decode, generateId } = require('../utils/math');
 const Product = require('../models/productModel');
 const { v4: uuidv4 } = require('uuid');
+const ErrorHandler = require('../utils/errorHandler');
 
 exports._mint = asyncErrorHandler(async (req, res, next) => {
     const {serialNums, password} = req.body;
@@ -81,24 +82,17 @@ exports._mint = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports._init_replace_item = asyncErrorHandler(async (req, res, next) => {
-    const {serialNum, password} = req.body;
+    const {serialNum, nftId, password} = req.body;
     const user = req.user;
 
-    const products = await Product.find({serialNumber: serialNum});
-    if (products.length === 0) {
-        return next(new ErrorHandler("Product Not Found", 404));
-    }
-    const product = products[0];
-
     user_private_key = decode(ADMIN_WALLET_PRIVATE_KEY, user.private_key, password);
-    private_key = user_private_key;// seller-private-key after decoding
+    private_key = user_private_key; // customer-service-private-key after decoding
 
-    tokenId = product.nft_id;
+    tokenId = nftId;
     oldItemId = serialNum;
     newItemId = "sno-" + uuidv4();
-
     const op = await init_replace_item(tokenId, oldItemId, newItemId, MINTKART_CONTRACT_ADDRESS, FA2_CONTRACT_ADDRESS, private_key);
-    console.log(op);
+
     res.status(200).json({
         success: true,
         op
