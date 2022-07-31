@@ -35,6 +35,8 @@ exports.newOrder = asyncErrorHandler(async (req, res, next) => {
         totalPrice,
         paidAt: Date.now(),
         user: req.user._id,
+        shippedAt: Date.now() + (3600 * 1000 * 24),
+        deliveredAt: Date.now() + (3600 * 1000 * 24*2)
     });
     res.status(201).json({
         success: true,
