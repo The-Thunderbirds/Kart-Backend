@@ -4,3 +4,8 @@
   - Now to store the private key, we first hash the user password with an environment secret to get a digest that act as a stronger version of the existing user password.
   - Then we AES encrypt the digest along with the private key to get the encoded form of the private key which can be stored.
   - Then when required we AES decrypt the encoded version using the same process.
+
+Level 1
+![Level 1](./_images/level1.png)
+Level 2
+![Level 2](./_images/level2.png)
