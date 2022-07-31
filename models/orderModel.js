@@ -81,8 +81,14 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: "Delivered",
     },
-    deliveredAt: Date,
-    shippedAt: Date,
+    deliveredAt: {
+        type: Date,
+        default:Date.now
+    },
+    shippedAt: {
+        type: Date,
+        default: Date.now
+    },
     createdAt: {
         type: Date,
         default: Date.now
