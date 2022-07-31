@@ -13,9 +13,12 @@ const add_joining_bonus = async (pkh) => {
 
 const add_joining_bonus_admin = async (pkh) => {
     const Tezos = await getTezosAccount(ADMIN_WALLET_PRIVATE_KEY);
-
+    const bal = await (await Tezos.tz.getBalance(pkh)).toNumber();
+    if(bal > 5e6){
+        return {"success": false};
+    }
     const op = await Tezos.contract.transfer({to: pkh, amount: 5});
-    return {"hash":op.hash};
+    return {"success": true, "hash":op.hash};
 }
 
 const mint = async (mint_params, contract_address, private_key) => {
@@ -65,7 +68,7 @@ const init_burn = async (tokenId, mintkart_address, contract_address, private_ke
 const add_seller = async (seller, contract_address, private_key) => {
     const Tezos = await getTezosAccount(private_key);
     const contract = await Tezos.contract.at(contract_address);
-    const op = await contract.methods.add_seller(seller).send();
+    const op = await contract.methods.add_seller(seller).send(amount = 5);
     // await op.confirmation(OP_CONFIRMATIONS);
     return {"hash":op.hash};
 };
@@ -81,7 +84,7 @@ const remove_seller = async (seller, contract_address, private_key) => {
 const add_customer_service = async (customer_service, contract_address, private_key) => {
     const Tezos = await getTezosAccount(private_key);
     const contract = await Tezos.contract.at(contract_address);
-    const op = await contract.methods.add_customer_service(customer_service).send();
+    const op = await contract.methods.add_customer_service(customer_service).send(amount = 5);
     // await op.confirmation(OP_CONFIRMATIONS);
     return {"hash":op.hash};
 };

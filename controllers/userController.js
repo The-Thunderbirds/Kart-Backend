@@ -66,11 +66,18 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.add_joining_bonus = asyncErrorHandler(async (req, res, next) => {
-    await add_joining_bonus(req.user.public_key_hash);
-    res.status(200).json({
-        success: true,
-        message: "Request Sent",
-    });
+    const result = await add_joining_bonus(req.user.public_key_hash);
+    if(result['success']){
+        res.status(200).json({
+            success: true,
+            message: "Request Sent",
+        });
+    }else{
+        res.status(200).json({
+            success: false,
+            message: "Request cannot be sent if wallet has more than 5ꜩ",
+        });
+    }
 });
 
 // Login User
