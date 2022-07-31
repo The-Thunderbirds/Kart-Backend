@@ -18,7 +18,7 @@ exports._buy = asyncErrorHandler(async (req, res, next) => {
     console.log(op);
     const products = await Product.find({serialNumber: serialNum});
     const product = products[0];
-    await sendSms('+917207895340', buildMessage(itemId, product.nft_id, getNodeExplorer(op['hash'])));
+    await sendSms('+917207895340', buildMessage(product.nft_id, itemId, getNodeExplorer(op['hash'])));
     res.status(200).json({
         success: true,
         op,
