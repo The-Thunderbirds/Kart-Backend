@@ -6,7 +6,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 const buildMessage = (nft_id, serial_number, explorer) => {
-  return `Thank you for shopping with flipkart!\\
+  return `Thank you for shopping with Flipkart!\\
           You have successfully claimed your warranty NFT. Please find the details below:\\
           Item Serial Number: ${serial_number}\\
           Warranty NFT ID: ${nft_id}\\
