@@ -11,7 +11,7 @@ const add_joining_bonus = async (pkh) => {
         return {"success": false};
     }
     const op = await Tezos.contract.transfer({to: pkh, amount: 5});
-    return {"hash":op.hash};
+    return {"success": true, "hash":op.hash};
 }
 
 const add_joining_bonus_admin = async (pkh) => {
