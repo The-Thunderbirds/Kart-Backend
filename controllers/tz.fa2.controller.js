@@ -100,31 +100,51 @@ exports._init_replace_item = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports._init_burn = asyncErrorHandler(async (req, res, next) => {
-    tokenId = 1;
+    tokenId = req.params.id;
     const op = await init_burn(tokenId, MINTKART_CONTRACT_ADDRESS, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
+    res.status(200).json({
+        success: true,
+        op
+    });
 });
 
 exports._add_seller = asyncErrorHandler(async (req, res, next) => {
     seller = 'tz1TpvrMd352n7LZgb3TAd1kE4XZvTLS5EvR';// public-key-hash
     const op = await add_seller(seller, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
+    res.status(200).json({
+        success: true,
+        op
+    });
 });
 
 exports._remove_seller = asyncErrorHandler(async (req, res, next) => {
     seller = 'tz1TpvrMd352n7LZgb3TAd1kE4XZvTLS5EvR';
     const op = await remove_seller(seller, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
+    res.status(200).json({
+        success: true,
+        op
+    });
 });
 
 exports._add_customer_service = asyncErrorHandler(async (req, res, next) => {
     customer_service = 'tz1iCSMCuUWiEFjSzDLWvK9hMht9zzCw7kXb';// public-key-hash
     const op = await add_customer_service(customer_service, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
+    res.status(200).json({
+        success: true,
+        op
+    });
 });
 
 exports._remove_customer_service = asyncErrorHandler(async (req, res, next) => {
     customer_service = 'tz1iCSMCuUWiEFjSzDLWvK9hMht9zzCw7kXb';
     const op = await remove_customer_service(customer_service, FA2_CONTRACT_ADDRESS, ADMIN_WALLET_PRIVATE_KEY);
     console.log(op);
+    res.status(200).json({
+        success: true,
+        op
+    });
 });
